@@ -73,6 +73,7 @@ export interface CalendarProps<DateType> {
   onChange?: (date: DateType) => void;
   onPanelChange?: (date: DateType, mode: CalendarMode) => void;
   onSelect?: (date: DateType, selectInfo: SelectInfo) => void;
+  yearLabelExtra?: (year: number) => string;
 }
 
 function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
@@ -114,6 +115,7 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
       onChange,
       onPanelChange,
       onSelect,
+      yearLabelExtra,
     } = props;
     const { getPrefixCls, direction, calendar } = React.useContext(ConfigContext);
     const prefixCls = getPrefixCls('picker', customizePrefixCls);
@@ -331,6 +333,7 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
             validRange={validRange}
             onChange={onInternalSelect}
             onModeChange={triggerModeChange}
+            yearLabelExtra={yearLabelExtra}
           />
         )}
         <RCPickerPanel

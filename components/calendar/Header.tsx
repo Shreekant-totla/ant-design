@@ -19,11 +19,21 @@ interface SharedProps<DateType> {
   fullscreen: boolean;
   divRef: React.RefObject<HTMLDivElement>;
   onChange: (year: DateType) => void;
+  labelExtra?: (year: number) => string;
 }
 
 function YearSelect<DateType>(props: SharedProps<DateType>) {
-  const { fullscreen, validRange, generateConfig, locale, prefixCls, value, onChange, divRef } =
-    props;
+  const {
+    fullscreen,
+    validRange,
+    generateConfig,
+    locale,
+    prefixCls,
+    value,
+    onChange,
+    divRef,
+    labelExtra,
+  } = props;
 
   const year = generateConfig.getYear(value || generateConfig.getNow());
 
@@ -38,7 +48,7 @@ function YearSelect<DateType>(props: SharedProps<DateType>) {
   const suffix = locale && locale.year === '年' ? '年' : '';
   const options: { label: string; value: number }[] = [];
   for (let index = start; index < end; index++) {
-    options.push({ label: `${index}${suffix}`, value: index });
+    options.push({ label: `${index}${suffix}${labelExtra?.(index + 1) || ''}`, value: index });
   }
 
   return (
@@ -149,9 +159,10 @@ export interface CalendarHeaderProps<DateType> {
   fullscreen: boolean;
   onChange: (date: DateType, source: SelectInfo['source']) => void;
   onModeChange: (mode: CalendarMode) => void;
+  yearLabelExtra?: (year?: number) => string;
 }
 function CalendarHeader<DateType>(props: CalendarHeaderProps<DateType>) {
-  const { prefixCls, fullscreen, mode, onChange, onModeChange } = props;
+  const { prefixCls, fullscreen, mode, onChange, onModeChange, yearLabelExtra } = props;
   const divRef = React.useRef<HTMLDivElement>(null);
 
   const formItemInputContext = useContext(FormItemInputContext);
@@ -174,6 +185,7 @@ function CalendarHeader<DateType>(props: CalendarHeaderProps<DateType>) {
       <FormItemInputContext.Provider value={mergedFormItemInputContext}>
         <YearSelect
           {...sharedProps}
+          labelExtra={yearLabelExtra}
           onChange={(v) => {
             onChange(v, 'year');
           }}
